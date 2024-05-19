@@ -1,5 +1,4 @@
 matplotlib
 seaborn
 scikit-learn
-drive
-google-colab
+googlecolab
