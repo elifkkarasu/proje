@@ -22,13 +22,10 @@ from sklearn.metrics import classification_report
 # In[ ]:
 
 
-
-
-
 # In[2]:
 
 
-from google.colab import drive ## drive a bağlanmak için
+from google.colab import drive  # drive a bağlanmak için
 drive.mount('/content/drive')
 
 
@@ -41,15 +38,16 @@ get_ipython().system("cp /content/drive/MyDrive/project/data.csv /tmp/ ## drive 
 # In[4]:
 
 
-data = pd.read_csv('/tmp/data.csv') ## datayı yüklüyoruz.
-data.head() #datasetin ilk 5 verisini gösterir
+data = pd.read_csv('/tmp/data.csv')  # datayı yüklüyoruz.
+data.head()  # datasetin ilk 5 verisini gösterir
 
 
 # In[5]:
 
 
-data['Haber Gövdesi'] = data['Haber Gövdesi'].apply(lambda x: ' '.join([re.sub(r"[^a-zA-Z]", " ", word.lower()) for word in x.split() ]))
-## datadan numaraları ve noktalama işlemlerini çıkarıyoruz. Sadece küçük harf ve büyük harflerden oluşan kelimeler kalıyor.
+data['Haber Gövdesi'] = data['Haber Gövdesi'].apply(lambda x: ' '.join(
+    [re.sub(r"[^a-zA-Z]", " ", word.lower()) for word in x.split()]))
+# datadan numaraları ve noktalama işlemlerini çıkarıyoruz. Sadece küçük harf ve büyük harflerden oluşan kelimeler kalıyor.
 categories = data['Sınıf'].values
 texts = data['Haber Gövdesi'].values
 
@@ -57,27 +55,31 @@ texts = data['Haber Gövdesi'].values
 # In[6]:
 
 
-X_train, X_test, y_train, y_test = train_test_split(texts, categories, random_state=1, test_size = 0.2) # verisetini eğitim ve test diye ayırıyoruz
+X_train, X_test, y_train, y_test = train_test_split(
+    texts, categories, random_state=1, test_size=0.2)  # verisetini eğitim ve test diye ayırıyoruz
 
 
 # In[7]:
 
 
 vect = CountVectorizer()
-vect.fit(X_train) ## vektörize etmek için modeli eğitiyoruz.
+vect.fit(X_train)  # vektörize etmek için modeli eğitiyoruz.
 
-X_train_dtm = vect.transform(X_train)  ## train verilerini vektörize ediyoruz. yani veri seti kaç boyutluysa artık, o kadar uzay oluşturup kelimeleri vektörleştiriyoruz.
+# train verilerini vektörize ediyoruz. yani veri seti kaç boyutluysa artık, o kadar uzay oluşturup kelimeleri vektörleştiriyoruz.
+X_train_dtm = vect.transform(X_train)
 
 print(type(X_train_dtm), X_train_dtm.shape)
 
-X_test_dtm = vect.transform(X_test)  ## train verilerini vektörize ediyoruz. yani veri seti kaç boyutluysa artık, o kadar uzay oluşturup kelimeleri vektörleştiriyoruz.
+# train verilerini vektörize ediyoruz. yani veri seti kaç boyutluysa artık, o kadar uzay oluşturup kelimeleri vektörleştiriyoruz.
+X_test_dtm = vect.transform(X_test)
 print(type(X_test_dtm), X_test_dtm.shape)
 
 
 # In[8]:
 
 
-tfidf_transformer = TfidfTransformer() ## öznitelik çıkarmak için tf-idf yöntemini kullanıyoruz.
+# öznitelik çıkarmak için tf-idf yöntemini kullanıyoruz.
+tfidf_transformer = TfidfTransformer()
 tfidf_transformer.fit(X_train_dtm)
 tfidf_transformer.transform(X_train_dtm)
 
@@ -101,13 +103,13 @@ print(classification_report(y_test, y_pred_class))
 # In[11]:
 
 
-result = confusion_matrix(y_test, y_pred_class , normalize='pred')
+result = confusion_matrix(y_test, y_pred_class, normalize='pred')
 target_names = data.Sınıf.unique()
 
-df_cm = pd.DataFrame(result, index = [i for i in target_names],
-                  columns = [i for i in target_names])
+df_cm = pd.DataFrame(result, index=[i for i in target_names],
+                     columns=[i for i in target_names])
 
-plt.figure(figsize = (10,7))
+plt.figure(figsize=(10, 7))
 color = sns.light_palette("seagreen", as_cmap=True)
 sns.heatmap(df_cm, annot=True, cmap=color)
 
@@ -131,19 +133,15 @@ print(classification_report(y_test, y_pred_class))
 # In[30]:
 
 
-result = confusion_matrix(y_test, y_pred_class , normalize='pred')
+result = confusion_matrix(y_test, y_pred_class, normalize='pred')
 target_names = data.Sınıf.unique()
 
-df_cm = pd.DataFrame(result, index = [i for i in target_names],
-                  columns = [i for i in target_names])
+df_cm = pd.DataFrame(result, index=[i for i in target_names],
+                     columns=[i for i in target_names])
 
-plt.figure(figsize = (10,7))
+plt.figure(figsize=(10, 7))
 color = sns.light_palette("seagreen", as_cmap=True)
 sns.heatmap(df_cm, annot=True, cmap=color)
 
 
 # In[ ]:
-
-
-
-
